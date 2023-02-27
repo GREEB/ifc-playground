@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="../../../favicon.ico" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>IFC-playground</title>
+  </head>
+  <body>
+    <div
+      class="hidden opacity-50 duration-150 hover:opacity-100 absolute h-[50%] resize z-10 bottom-0 right-0 min-w-[50%] min-h-[200px] resize monaco-editor-container"
+    ></div>
+    <article class="z-10 absolute top-0 left-0 min-h-[50svh] min-w-[50svh]">
+      <div></div>
+      <ul>
+        <li><kbd>p</kbd><span>createPlane</span></li>
+        <li><kbd>o</kbd><span>deletePlane</span></li>
+      </ul>
+    </article>
+    <div id="viewer-container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/tweakpane@3.1.4/dist/tweakpane.min.js"></script>
+
+    <script src="bundle.js"></script>
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/monaco-editor@latest/min/vs/loader.js"
+    ></script>
+    <script>
+      require.config({
+        paths: { vs: "https://unpkg.com/monaco-editor@latest/min/vs" },
+      });
+
+      // Before loading vs/editor/editor.main, define a global MonacoEnvironment that overwrites
+      // the default worker url location (used when creating WebWorkers). The problem here is that
+      // HTML5 does not allow cross-domain web workers, so we need to proxy the instantiation of
+      // a web worker through a same-domain script
+      window.MonacoEnvironment = {
+        getWorkerUrl: function (workerId, label) {
+          return `data:text/javascript;charset=utf-8,${encodeURIComponent(`
+        self.MonacoEnvironment = {
+          baseUrl: 'https://unpkg.com/monaco-editor@latest/min/'
+        };
+        importScripts('https://unpkg.com/monaco-editor@latest/min/vs/base/worker/workerMain.js');`)}`;
+        },
+      };
+
+      require(["vs/editor/editor.main"], function () {
+        editor = monaco.editor.create(
+          document.querySelector(".monaco-editor-container"),
+          {
+            value: "",
+            language: "json",
+            theme: "vs-dark",
+            automaticLayout: true,
+          }
+        );
+      });
+    </script>
+  </body>
+</html>
