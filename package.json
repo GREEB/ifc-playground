@@ -9,7 +9,13 @@
     "postcss-url": "^10.1.3",
     "rollup-plugin-postcss": "^4.0.2",
     "tweakpane": "^3.1.4",
+    "web-ifc-three": "^0.0.125",
     "web-ifc-viewer": "^1.0.213"
+  },
+  "scripts": {
+    "build": "rollup -c && npm run copy-files",
+    "watch": "rollup -c -w",
+    "copy-files": "cp node_modules/web-ifc/web-ifc.wasm . && cp node_modules/web-ifc/web-ifc-mt.wasm . && cp node_modules/web-ifc-three/IFCWorker.js . && cp node_modules/web-ifc-three/IFCWorker.js.map ."
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^15.0.1",
